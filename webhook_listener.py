@@ -68,6 +68,8 @@ def index():
     # Try to parse out the branch from the request payload
     try:
         branch = request.get_json(force=True)["ref"].split("/", 2)[2]
+        commit_id = request.get_json(force=True)["after"]
+
     except:
         print_exc()
         logging.info("Parsing payload failed")
@@ -82,7 +84,7 @@ def index():
     # Run scripts, saving into responses (which we clear out)
     responses = {}
     for script in scripts:
-        proc = Popen([script, branch], stdout=PIPE, stderr=PIPE)
+        proc = Popen([script, branch, commit_id], stdout=PIPE, stderr=PIPE)
         stdout, stderr = proc.communicate()
         stdout = stdout.decode('utf-8')
         stderr = stderr.decode('utf-8')
