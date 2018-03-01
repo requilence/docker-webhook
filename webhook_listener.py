@@ -84,11 +84,9 @@ def index():
     # Run scripts, saving into responses (which we clear out)
     responses = {}
     for script in scripts:
-        proc = Popen([script, branch, commit_id])
+        proc = subprocess.Popen([script, branch, commit_id], stdout=subprocess.PIPE, shell=True)
         stdout, stderr = proc.communicate()
-        stdout = stdout.decode('utf-8')
-        stderr = stderr.decode('utf-8')
-
+    
         # Log errors if a hook failed
         if proc.returncode != 0:
             logging.error('[%s]: %d\n%s', script, proc.returncode, stderr)
